@@ -1,0 +1,4 @@
+cttoolv2/__pycache__
+app_cttoolv2/__pycache__
+*.pyc
+db.sqlite3
