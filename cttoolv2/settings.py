@@ -15,6 +15,8 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+MEDIA_ROOT = BASE_DIR / 'media'
+MEIDA_URL = '/media/'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -55,7 +57,7 @@ ROOT_URLCONF = 'cttoolv2.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -122,3 +124,23 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# app_cttoolv2 globals
+
+CONFIG_PATH = 'configuration/config.json'
+COURSE_XML = 'course.xml'
+MANIFEST = 'imsmanifest.xml'
+WORKSPACE = Path.cwd() / 'output'
+TAR_FILE_EXTENSION = '.gz'
+
+# ENV_NAME = parse_args().output.upper()
+
+
+# Logging
+import logging
+logger = logging.getLogger(__name__)
+
+logging.basicConfig(
+    level = logging.DEBUG,
+    format = '"%(levelname)s:%(name)s:%(message)s"  ',
+)
