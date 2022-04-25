@@ -20,13 +20,12 @@ def index(request):
 def convert_course(request):
     context = {}
     tar_file = request.FILES.get('input-file')
-    import pdb;pdb.set_trace()
 
     source_file_name = default_storage.save(tar_file.name, ContentFile(tar_file.read()))
 
     process_tar_file(source_file_name)
 
-    tar = tarfile.open(source_file_name, "r:gz")
+    tar = tarfile.open("media/" + source_file_name, "r:gz")
     source_file = tar.fileobj
 
     # default_storage.delete(source_file_name)
