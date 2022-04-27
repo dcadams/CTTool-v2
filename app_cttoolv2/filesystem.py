@@ -4,6 +4,8 @@ import shutil
 import tarfile
 import traceback
 
+from django.conf import settings
+
 logger = logging.getLogger()
 
 
@@ -39,3 +41,14 @@ def untar_directory(path_src, path_dst_base=None):
 
     return path_dst
 
+def get_configuration():
+    """
+    Returns JSON object as a dictionary.
+    """
+    try:
+        with open(settings.CONFIG_PATH, encoding='utf-8') as conf_file:
+            conf_json = json.load(conf_file)
+    except Exception:
+        traceback.print_exc()
+
+    return conf_json.get(settings.ENV_NAME)

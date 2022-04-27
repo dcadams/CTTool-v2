@@ -127,14 +127,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # app_cttoolv2 globals
 
-CONFIG_PATH = 'configuration/config.json'
+CONFIG_PATH = 'app_cttoolv2/configuration/config.json'
 COURSE_XML = 'course.xml'
 MANIFEST = 'imsmanifest.xml'
 WORKSPACE = Path.cwd() / 'output'
 TAR_FILE_EXTENSION = '.gz'
 
-# ENV_NAME = parse_args().output.upper()
-
+ENV_NAME = 'DEV'
+ENV_LIST = ['dev', 'qa', 'perf', 'prod']
 
 # Logging
 import logging

@@ -21,6 +21,7 @@ def convert_course(request):
     context = {}
     tar_file = request.FILES.get('input-file')
 
+    settings.ENV_NAME = request.POST.get('env','DEV')
     source_file_name = default_storage.save(tar_file.name, ContentFile(tar_file.read()))
 
     process_tar_file(source_file_name)

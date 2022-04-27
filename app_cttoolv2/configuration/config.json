@@ -1,0 +1,22 @@
+{
+	"DEV" : {
+		"launch_url" : "https://hub-dev.netacad.com/kernel/lti/launch?client_id=824811",
+		"tool_id" : "11",
+		"vds_tool_id" : "8"
+	},
+	"QA" : {
+		"launch_url" : "https://hub-qa.netacad.com/kernel/lti/launch?client_id=573080",
+		"tool_id" : "13",
+		"vds_tool_id" : "12"
+	},
+	"PERF" : {
+		"launch_url" : "https://hub-nperf.netacad.com/kernel/lti/launch?client_id=030831",
+		"tool_id" : "1",
+		"vds_tool_id" : "2"
+	},
+	"PROD" : {
+		"launch_url" : "https://contenthub.netacad.com/kernel/lti/launch?client_id=609587",
+		"tool_id" : "1",
+		"vds_tool_id" : "2"
+	}
+}
