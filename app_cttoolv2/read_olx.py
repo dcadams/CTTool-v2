@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from django.conf import settings
 
 from app_cttoolv2.filesystem import get_configuration
+from app_cttoolv2.write_olx import write_vertical
 
 logger = logging.getLogger()
 
@@ -100,7 +101,80 @@ class OLXReader:
         }
 
     def parse_vertical_xml(self, vertical_name, course_path):
-        pass
+        """
+        Parse the <vertical>.xml and extract vertical tags.
+        Inputs:
+            vertical_name: name of vertical xml file.
+            course_path: path to course directory.
+        """
+        env_conf = get_configuration()
+
+        vertical_path = course_path + 'vertical/' + vertical_name
+        with open(vertical_path, 'r', encoding='utf-8') as vertical_xml_file:
+            data = vertical_xml_file.read()
+
+        bs_data = BeautifulSoup(data, 'xml')
+        component_list = []
+
+        vertical_display_name = bs_data.find('vertical').get("display_name")
+
+        conf = {
+            'launch_url': env_conf.get('launch_url'),
+            'tool_id': env_conf.get('tool_id')
+        }
+
+        lti_adv_dt = bs_data.find('lti_advantage_consumer')
+        if lti_adv_dt:
+            self.lti_cnt += 1
+            lti_launch_url = lti_adv_dt.get('launch_url')
+
+            if (
+                lti_launch_url and 'SelfActivatingAssessmentLauncher'
+                in lti_launch_url
+               ):
+                self.vds_cnt += 1
+                conf['tool_id'] = env_conf.get('vds_tool_id')
+
+                env_tag = next(
+                    (env for env in settings.ENV_LIST if env in lti_launch_url),
+                    False
+                )
+                if env_tag:
+                    lti_launch_url.replace(env_tag, settings.ENV_NAME.lower(), 1)
+
+                conf['launch_url'] = lti_launch_url
+
+                logger.info(
+                    'VDS LTI converted, name: %s',
+                    lti_adv_dt.get('display_name')
+                )
+
+            conf['custom_parameters'] = lti_adv_dt.get('custom_parameters')
+            conf['url_name'] = lti_adv_dt.get('url_name')
+            conf['xblock-family'] = lti_adv_dt.get('xblock-family')
+            conf['has_score'] = lti_adv_dt.get('has_score')
+            conf['ask_to_send_username'] = lti_adv_dt.get(
+                'ask_to_send_username'
+            )
+            conf['ask_to_send_name'] = lti_adv_dt.get('ask_to_send_name')
+            conf['ask_to_send_email'] = lti_adv_dt.get('ask_to_send_email')
+
+            write_vertical(vertical_path, conf, vertical_display_name)
+
+        for vertical in bs_data.children:
+            tag_name = ''
+            file_name = ''
+            for v_child in vertical.findAll():
+                tag_name = v_child.name
+                file_name = v_child.get("url_name")
+            component_list.append(
+                {
+                    "ver_display_name": vertical_display_name,
+                    "tag_name": tag_name,
+                    "file_name": file_name
+                }
+            )
+        return component_list
 
 
 def get_course_tree(path, base_path_len):
