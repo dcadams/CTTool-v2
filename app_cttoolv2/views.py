@@ -1,3 +1,4 @@
+import json
 import tarfile
 import tempfile
 import traceback
@@ -24,13 +25,10 @@ def convert_course(request):
     settings.ENV_NAME = request.POST.get('env','DEV')
     source_file_name = default_storage.save(tar_file.name, ContentFile(tar_file.read()))
 
-    converted_file_path = process_tar_file(source_file_name)
-    tar = tarfile.open(converted_file_path, "r:gz")
-    converted_file = tar.fileobj
-
+    new_file_metadata = process_tar_file(source_file_name)
     default_storage.delete(source_file_name)
 
-    response = HttpResponse(converted_file, content_type=tar_file.content_type)
+    response = HttpResponse(json.dumps(new_file_metadata))
     return response
 
 
@@ -41,8 +39,7 @@ def process_tar_file(source_file_name):
         temp_workspace = Path(tmpdirname) / settings.WORKSPACE.stem
         for input_tar_file in _get_files(source_file_path):
             try:
-                converted_file_path = convert_file(input_tar_file, temp_workspace)
-                return converted_file_path
+                return convert_file(input_tar_file, temp_workspace)
             except Exception:
                 traceback.print_exc()
 

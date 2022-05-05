@@ -51,6 +51,10 @@
       </div>
       <div class="result-info">
           <!-- Show result data here. -->
+          Course Name : <span id="course_name"></span><br>
+          Course Key Tags : <span id="course_key_tags"></span><br>
+          Total LTIs Converted : <span id="lti">0</span><br>
+          Total VDS LTIs Converted : <span id="vds">0</span>
       </div>
     </div>
 
@@ -69,14 +73,21 @@
           type: "POST",
           url: 'convert_course/',
           data: formData, // serializes the form's elements.
-          success: function(data)
+          success: function(newFileMetadata)
           {
-            var blob=new Blob([data]);
-            var link=document.createElement('a');
-            link.href=window.URL.createObjectURL(blob);
-            link.download="converted_file.tar.gz";
-            link.click();
-            // alert(data); // show response from the php script.
+            var newFileMetadata = JSON.parse(newFileMetadata);
+            var alink=document.createElement('a');
+            alink.setAttribute('download', newFileMetadata['new_file_path']);
+            alink.href = newFileMetadata['new_file_path'];
+            document.body.appendChild(alink);
+
+            alink.click();
+            alink.remove();
+
+            $(document).find('#course_name')[0].textContent = newFileMetadata['info_context']['course_name'];
+            $(document).find('#course_key_tags')[0].textContent = newFileMetadata['course_key_tags']['course_org'] + ' + ' + newFileMetadata['course_key_tags']['course_run'] + ' + ' + newFileMetadata['course_key_tags']['course_url'];
+            $(document).find('#lti')[0].textContent = newFileMetadata['info_context']['lti_cnt'];
+            $(document).find('#vds')[0].textContent = newFileMetadata['info_context']['vds_cnt'];
           },
           cache: false,
           contentType: false,

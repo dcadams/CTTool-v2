@@ -55,14 +55,12 @@ def compress_course(source_dir, course_key_tags):
                        course_key_tags['course_run'] + '_' +
                        course_key_tags['course_url'] + '.tar.gz')
 
-    new_file = None
-    with tarfile.open("output/" + output_filename, "w:gz") as tar:
+    with tarfile.open("media/output/" + output_filename, "w:gz") as tar:
         tar.add(source_dir, arcname=os.path.basename(source_dir))
-        new_file = tar.fileobj.name
 
     logger.info(  # pylint: disable=logging-fstring-interpolation
         f"New course file {output_filename} has been created for {settings.ENV_NAME} "
         "environment."
     )
 
-    return new_file
+    return "output/" + output_filename

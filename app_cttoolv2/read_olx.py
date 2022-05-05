@@ -51,11 +51,19 @@ class OLXReader:
 
         logger.info('Total LTIs converted : %s', self.lti_cnt)
         logger.info('VDS LTIs converted : %s', self.vds_cnt)
+
+        info_context = {
+            'lti_cnt': self.lti_cnt,
+            'vds_cnt': self.vds_cnt,
+            'course_name': course_metadata['display_name']
+        }
+
         return {
             'course_metadata': course_metadata,
             'course_outline': course_outline,
             'base_path': base_path,
-            'course_key_tags': course_detail
+            'course_key_tags': course_detail,
+            'info_context': info_context
         }
 
     def _traverse_course_content(self, course_path):
