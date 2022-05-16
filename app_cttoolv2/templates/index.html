@@ -81,14 +81,6 @@
           background-color: #4e555b;
           border-left-color: #4e555b;
         }
-        /*input[type=file]::file-selector-button{
-          color: #fff;
-          background-color: #6c757d;
-          border-color: #6c757d;
-        }*/
-
-
-
         .custom-file-button input[type=file]::-webkit-file-upload-button {
           display: none;
         }
@@ -120,7 +112,17 @@
         }
         .result-info span{
             font-size: 1.5rem;
-        }   
+        }
+        .jumbotron.shadow{
+            margin-bottom: 0;
+            padding-bottom: 3rem;
+        }
+        #status-collapse .card{
+            margin-bottom: 3rem;
+            border-radius: 0px 0px 10px 10px;
+            font-size: 20px;
+            text-align: center;
+        }
     </style>
   </head>
   <body>
@@ -160,9 +162,14 @@
           <div class="sub-btn">
             <button type="submit" class="btn btn-outline-dark">Convert</button>
           </div>
-        </form>  
+        </form>
       </div>
-      <div class="collapse show" id="myCollapse">
+        <div class="collapse" id="status-collapse">
+          <div class="card card-body bg-success text-white font-weight-bold">
+            Course converted successfully!
+          </div> 
+        </div>
+      <div class="collapse" id="result-collapse">
         <div class="card card-body">
           <div class="result-info">
             <!-- Show result data here. -->
@@ -183,13 +190,16 @@
   </body>
 
   <script type="text/javascript">
-    $("#myCollapse").collapse("hide");
-
     $(".input-group-text").on( "click", function() {
         $('#input-file').click();
     });
     $("#input-file").on( "click", function() {
-        $("#myCollapse").collapse("hide");
+        $("#result-collapse").collapse("hide");
+        $("#status-collapse").collapse("hide");
+    });
+    $(".btn-group").on( "click", function() {
+        $("#result-collapse").collapse("hide");
+        $("#status-collapse").collapse("hide");
     });
 
     $("#convert-form").submit(function(e) {
@@ -202,8 +212,10 @@
           data: formData, // serializes the form's elements.
           success: function(newFileMetadata)
           {
+            $("#status-collapse").collapse("show");
+
             var newFileMetadata = JSON.parse(newFileMetadata);
-            var alink=document.createElement('a');
+            var alink = document.createElement('a');
             alink.setAttribute('download', newFileMetadata['new_file_path']);
             alink.href = newFileMetadata['new_file_path'];
             document.body.appendChild(alink);
@@ -211,7 +223,7 @@
             alink.click();
             alink.remove();
 
-            $("#myCollapse").collapse("show");
+            $("#result-collapse").collapse("show");
 
             $(document).find('#course_name')[0].textContent = newFileMetadata['info_context']['course_name'];
             $(document).find('#course_key_tags')[0].textContent = newFileMetadata['course_key_tags']['course_org'] + ' + ' + newFileMetadata['course_key_tags']['course_run'] + ' + ' + newFileMetadata['course_key_tags']['course_url'];
