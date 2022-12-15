@@ -125,6 +125,7 @@ class OLXReader:
         component_list = []
 
         vertical_display_name = bs_data.find('vertical').get("display_name")
+        vertical_visible_to_staff_only = bs_data.find('vertical').get("visible_to_staff_only")
 
         conf = {
             'launch_url': env_conf.get('launch_url'),
@@ -166,8 +167,9 @@ class OLXReader:
             )
             conf['ask_to_send_name'] = lti_adv_dt.get('ask_to_send_name')
             conf['ask_to_send_email'] = lti_adv_dt.get('ask_to_send_email')
+            conf['display_name'] = lti_adv_dt.get('display_name')
 
-            write_vertical(vertical_path, conf, vertical_display_name)
+            write_vertical(vertical_path, conf, vertical_display_name, vertical_visible_to_staff_only)
 
         for vertical in bs_data.children:
             tag_name = ''

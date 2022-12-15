@@ -7,7 +7,7 @@ from django.conf import settings
 
 logger = logging.getLogger()
 
-def write_vertical(output_dir_path, conf, vert_display_name):
+def write_vertical(output_dir_path, conf, vert_display_name, vert_visible_to_staff_only):
     """
     Writes verticals in file in xml format
     Inputs:
@@ -18,6 +18,8 @@ def write_vertical(output_dir_path, conf, vert_display_name):
     doc = minidom.Document()
     elem_vertical = doc.createElement('vertical')
     elem_vertical.setAttribute('display_name', vert_display_name)
+    if vert_visible_to_staff_only:
+        elem_vertical.setAttribute('visible_to_staff_only', vert_visible_to_staff_only)
     doc.appendChild(elem_vertical)
 
     # Create lti component for xml
@@ -33,6 +35,7 @@ def write_vertical(output_dir_path, conf, vert_display_name):
     elem_lti.setAttribute('ask_to_send_email', conf.get('ask_to_send_email'))
     elem_lti.setAttribute('tool_id', conf.get('tool_id'))
     elem_lti.setAttribute('launch_url', conf.get('launch_url'))
+    elem_lti.setAttribute('display_name', conf.get('display_name'))
     elem_lti.setAttribute('custom_parameters', conf.get('custom_parameters'))
     elem_vertical.appendChild(elem_lti)
 
