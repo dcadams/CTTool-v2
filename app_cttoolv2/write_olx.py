@@ -35,7 +35,10 @@ def write_vertical(output_dir_path, conf, vert_display_name, vert_visible_to_sta
     elem_lti.setAttribute('ask_to_send_email', conf.get('ask_to_send_email'))
     elem_lti.setAttribute('tool_id', conf.get('tool_id'))
     elem_lti.setAttribute('launch_url', conf.get('launch_url'))
-    elem_lti.setAttribute('display_name', conf.get('display_name'))
+    if conf.get('display_name'):
+        elem_lti.setAttribute('display_name', conf.get('display_name'))
+    else:
+        elem_lti.setAttribute('display_name', 'LTI Advantage Consumer')
     elem_lti.setAttribute('custom_parameters', conf.get('custom_parameters'))
     elem_vertical.appendChild(elem_lti)
 
